@@ -23,7 +23,7 @@ class Player extends FlxSprite
 		var down:Bool = false;
 		var left:Bool = false;
 		var right:Bool = false;
-		
+
 		//check if any keys are actually being pressed
 		up = FlxG.keys.anyPressed([UP,W]);
 		down = FlxG.keys.anyPressed([DOWN,S]);
