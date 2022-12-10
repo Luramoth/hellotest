@@ -24,7 +24,7 @@ class Player extends FlxSprite
 
 		// make the hitbox match the graphics
 		setSize(8,8);
-		offset.set(4,8);
+		offset.set(4,4);
 
 		//add in some animations
 		animation.add("d_idle", [0]);
