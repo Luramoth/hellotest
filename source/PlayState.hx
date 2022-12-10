@@ -1,5 +1,7 @@
 package;
 
+import flixel.addons.editors.tiled.TiledLayer;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.FlxG;
 import flixel.tile.FlxTilemap;
 import flixel.addons.editors.ogmo.FlxOgmo3Loader;
@@ -12,11 +14,27 @@ class PlayState extends FlxState
 	var map:FlxOgmo3Loader;
 	var walls:FlxTilemap;
 
+	var coins:FlxTypedGroup<Coin>;
+
 	function placeEntities(entity:EntityData)
 	{
 		if (entity.name == 'player')
 		{
 			player.setPosition(entity.x, entity.y);
+			trace('player placed');
+		}
+		else if (entity.name == "coin")
+		{
+			coins.add(new Coin(entity.x + 4, entity.y + 4));
+			trace('coin placed');
+		}
+	}
+
+	function playerTouchCoin(player:Player, coin:Coin)
+	{
+		if (player.alive && player.exists && coin.alive && coin.exists)
+		{
+			coin.kill();
 		}
 	}
 
@@ -38,6 +56,10 @@ class PlayState extends FlxState
 
 		FlxG.camera.follow(player, TOPDOWN, 1);
 
+		coins = new FlxTypedGroup<Coin>();
+		add(coins);
+		trace('coins created');
+
 		super.create();
 	}
 
@@ -45,5 +67,6 @@ class PlayState extends FlxState
 	{
 		super.update(elapsed);
 		FlxG.collide(player, walls);
+		FlxG.overlap(player, coins, playerTouchCoin);
 	}
 }
