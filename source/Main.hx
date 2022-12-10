@@ -12,6 +12,6 @@ class Main extends Sprite
 		trace("Hello, World!");
 
 		//start up the game as well as HaxeFlixel
-		addChild(new FlxGame(0, 0, MenuState));
+		addChild(new FlxGame(320, 240, MenuState));
 	}
 }
