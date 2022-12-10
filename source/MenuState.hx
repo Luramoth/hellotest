@@ -6,15 +6,15 @@ import flixel.FlxG;
 
 class MenuState extends FlxState
 {
-    var PlayButton:FlxButton;
+	var PlayButton:FlxButton;
 	override public function create()
 	{
 		super.create();
 
+		//create a button on screen and center it
 		PlayButton = new FlxButton(0,0, "play", clickPlay);
-        add(PlayButton);
-
-        PlayButton.screenCenter();
+		add(PlayButton);
+		PlayButton.screenCenter();
 	}
 
 	override public function update(elapsed:Float)
@@ -22,7 +22,8 @@ class MenuState extends FlxState
 		super.update(elapsed);
 	}
 
-    function clickPlay(){
-        FlxG.switchState(new PlayState());
-    }
+	//when called (called by PlayButton when pressed) then change the games overall state to playState
+	function clickPlay(){
+		FlxG.switchState(new PlayState());
+	}
 }
