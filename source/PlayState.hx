@@ -49,15 +49,15 @@ class PlayState extends FlxState
 		walls.setTileProperties(2, ANY);
 		add(walls);
 
+		coins = new FlxTypedGroup<Coin>();
+		add(coins);
+		trace('coins created');
+
 		player = new Player();
 		map.loadEntities(placeEntities, "entities");
 		add(player);
 
 		FlxG.camera.follow(player, TOPDOWN, 1);
-
-		coins = new FlxTypedGroup<Coin>();
-		add(coins);
-		trace('coins created');
 
 		super.create();
 	}
