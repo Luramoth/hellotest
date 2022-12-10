@@ -1,6 +1,5 @@
 package;
 
-import flixel.addons.editors.tiled.TiledLayer;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.FlxG;
 import flixel.tile.FlxTilemap;
