@@ -21,9 +21,7 @@ class PlayState extends FlxState
 	}
 
 	override public function create()
-	{
-		super.create();
-
+		{
 		// load tile map
 		map = new FlxOgmo3Loader(AssetPaths.turnBasedRPG__ogmo, AssetPaths.room001__json);
 		walls = map.loadTilemap(AssetPaths.tiles__png, "walls");
@@ -37,6 +35,8 @@ class PlayState extends FlxState
 		player = new Player();
 		map.loadEntities(placeEntities, "entities");
 		add(player);
+		
+		super.create();
 	}
 
 	override public function update(elapsed:Float)
