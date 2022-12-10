@@ -15,20 +15,20 @@ class PlayState extends FlxState
 
 	var coins:FlxTypedGroup<Coin>;
 
+	// place down all the entities based on the tilemap
 	function placeEntities(entity:EntityData)
 	{
-		if (entity.name == 'player')
+		if (entity.name == 'player')// find where the player is according to the tilemap and put then in place
 		{
 			player.setPosition(entity.x, entity.y);
-			trace('player placed');
 		}
-		else if (entity.name == "coin")
+		else if (entity.name == "coin")// find coins in the tilemap and place then down
 		{
 			coins.add(new Coin(entity.x + 4, entity.y + 4));
-			trace('coin placed');
 		}
 	}
 
+	// if coin is touched then call the coin's kill function
 	function playerTouchCoin(player:Player, coin:Coin)
 	{
 		if (player.alive && player.exists && coin.alive && coin.exists)
@@ -49,14 +49,16 @@ class PlayState extends FlxState
 		walls.setTileProperties(2, ANY);
 		add(walls);
 
+		// create coins
 		coins = new FlxTypedGroup<Coin>();
 		add(coins);
-		trace('coins created');
 
+		// create player
 		player = new Player();
 		map.loadEntities(placeEntities, "entities");
 		add(player);
 
+		// make camera follow player
 		FlxG.camera.follow(player, TOPDOWN, 1);
 
 		super.create();
@@ -65,7 +67,9 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
+		// detect collisions for walls
 		FlxG.collide(player, walls);
+		// detect collisions for coins
 		FlxG.overlap(player, coins, playerTouchCoin);
 	}
 }
