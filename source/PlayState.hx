@@ -1,5 +1,6 @@
 package;
 
+import Hud.HUD;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.FlxG;
 import flixel.tile.FlxTilemap;
@@ -8,6 +9,10 @@ import flixel.FlxState;
 
 class PlayState extends FlxState
 {
+	var hud:HUD;
+	var money:Int = 0;
+	var health:Int = 3;
+
 	var player: Player;
 
 	var map:FlxOgmo3Loader;
@@ -45,6 +50,9 @@ class PlayState extends FlxState
 		if (player.alive && player.exists && coin.alive && coin.exists)
 		{
 			coin.kill();
+
+			money++;
+			hud.updateHUD(health, money);
 		}
 	}
 
@@ -88,6 +96,9 @@ class PlayState extends FlxState
 
 		// make camera follow player
 		FlxG.camera.follow(player, TOPDOWN, 1);
+
+		hud = new HUD();
+		add(hud);
 
 		super.create();
 	}
