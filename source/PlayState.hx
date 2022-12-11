@@ -15,16 +15,27 @@ class PlayState extends FlxState
 
 	var coins:FlxTypedGroup<Coin>;
 
+	var enemies:FlxTypedGroup<Enemy>;
+
 	// place down all the entities based on the tilemap
 	function placeEntities(entity:EntityData)
 	{
-		if (entity.name == 'player')// find where the player is according to the tilemap and put then in place
+		var x = entity.x;
+		var y = entity.y;
+
+		switch (entity.name)
 		{
-			player.setPosition(entity.x, entity.y);
-		}
-		else if (entity.name == "coin")// find coins in the tilemap and place then down
-		{
-			coins.add(new Coin(entity.x + 4, entity.y + 4));
+			case "player":
+				player.setPosition(x, y);
+
+			case "coin":
+				coins.add(new Coin(x + 4, y + 4));
+
+			case "enemy":
+				enemies.add(new Enemy(x + 4, y, REGULAR));
+
+			case "boss":
+				enemies.add(new Enemy(x + 4, y, BOSS));
 		}
 	}
 
@@ -52,6 +63,10 @@ class PlayState extends FlxState
 		// create coins
 		coins = new FlxTypedGroup<Coin>();
 		add(coins);
+
+		//create enemies
+		enemies = new FlxTypedGroup<Enemy>();
+		add(enemies);
 
 		// create player
 		player = new Player();
