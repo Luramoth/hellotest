@@ -48,6 +48,19 @@ class PlayState extends FlxState
 		}
 	}
 
+	function checkEnemyVision(enemy:Enemy)
+	{
+		if (walls.ray(enemy.getMidpoint(), player.getMidpoint()))
+		{
+			enemy.seesPlayer = true;
+			enemy.playerPosition = player.getMidpoint();
+		}
+		else
+		{
+			enemy.seesPlayer = false;
+		}
+	}
+
 	override public function create()
 		{
 		// load tile map
@@ -86,5 +99,8 @@ class PlayState extends FlxState
 		FlxG.collide(player, walls);
 		// detect collisions for coins
 		FlxG.overlap(player, coins, playerTouchCoin);
+
+		FlxG.collide(enemies, walls);
+		enemies.forEachAlive(checkEnemyVision);
 	}
 }
