@@ -1,9 +1,9 @@
 package;
 
 import flixel.math.FlxVelocity;
-import flixel.FlxG;
 import flixel.math.FlxPoint;
 import flixel.FlxSprite;
+import flixel.FlxG;
 
 enum EnenmyType
 {
@@ -11,6 +11,7 @@ enum EnenmyType
 	BOSS;
 }
 
+// state mechine that is the core of the eney AI
 class FSM
 {
 	public var activeState:Float -> Void;
@@ -41,22 +42,23 @@ class Enemy extends FlxSprite
 	public var seesPlayer:Bool;
 	public var playerPosition:FlxPoint;
 
+	// idle state
 	function idle(elapsed:Float)
 	{
 		if (seesPlayer)
 		{
 			brain.activeState = chase;
 		}
-		else if (idleTimer <= 0)
+		else if (idleTimer <= 0)//  if th timer has run out then make enamy move in a random direction for a random amount of time
 		{
 			//95% chance to move
-			if (FlxG.random.bool(95))
+			if (FlxG.random.bool(95))// if it can move, then wander to a random direction
 			{
 				moveDirection = FlxG.random.int(0,8) * 45;
 
 				velocity.setPolarDegrees(WALK_SPEED, moveDirection);
 			}
-			else
+			else// else just do nothing at all
 			{
 				moveDirection = -1;
 				velocity.x = velocity.y = 0;
@@ -67,13 +69,13 @@ class Enemy extends FlxSprite
 			idleTimer -= elapsed;
 	}
 
-	function chase(elapsed:Float)
+	function chase(elapsed:Float)// if the player is seen then just fucking bolt at them
 	{
-		if (!seesPlayer)
+		if (!seesPlayer)// unless you do see them, in which case just idle
 		{
 			brain.activeState = idle;
 		}
-		else
+		else// move towards the player
 		{
 			FlxVelocity.moveTowardsPoint(this, playerPosition, CHASE_SPEED);
 		}
@@ -83,18 +85,28 @@ class Enemy extends FlxSprite
 	{
 		super(x,y);
 
-		this.type = type;
+		this.type = type;// i know how this works but i hate it
+
+		// graphics for the enemy changes depending on what type they are
 		var graphic = if (type == BOSS) AssetPaths.boss__png else AssetPaths.enemy__png;
+
+		//actually load those graphics in
 		loadGraphic(graphic, true, 16, 16);
 		setFacingFlip(LEFT,false,false);
 		setFacingFlip(RIGHT,true,false);
+
+		// animation time
 		animation.add("d_idle", [0]);
 		animation.add("lr_idle", [3]);
 		animation.add("u_idle", [6]);
 		animation.add("d_walk", [0, 1, 0, 2], 6);
 		animation.add("lr_walk", [3, 4, 3, 5], 6);
 		animation.add("u_walk", [6, 7, 6, 8], 6);
+
+		// give movement a bit of momentum
 		drag.x = drag.y = 10;
+
+		// set the size and position of the collider
 		setSize(8,8);
 		offset.x = 4;
 		offset.y = 8;
@@ -107,7 +119,7 @@ class Enemy extends FlxSprite
 
 	override public function update(elapsed:Float)
 	{
-		if (velocity.x != 0 || velocity.y != 0)
+		if (velocity.x != 0 || velocity.y != 0)// if enemy is moving then have them face in the direction that they are moving
 		{
 			if (Math.abs(velocity.x) > Math.abs(velocity.y))
 			{
@@ -125,7 +137,7 @@ class Enemy extends FlxSprite
 			}
 		}
 
-		switch (facing)
+		switch (facing)// switch their animation based on what direction they are facing
 		{
 			case LEFT, RIGHT:
 				animation.play("lr_" + action);

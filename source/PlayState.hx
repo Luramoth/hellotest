@@ -51,6 +51,7 @@ class PlayState extends FlxState
 		{
 			coin.kill();
 
+			// add more moeny to the counter
 			money++;
 			hud.updateHUD(health, money);
 		}
@@ -111,7 +112,8 @@ class PlayState extends FlxState
 		// detect collisions for coins
 		FlxG.overlap(player, coins, playerTouchCoin);
 
+		// make enemies collide with walls
 		FlxG.collide(enemies, walls);
-		enemies.forEachAlive(checkEnemyVision);
+		enemies.forEachAlive(checkEnemyVision);// check if the enemy is seeing the player
 	}
 }
