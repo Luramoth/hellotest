@@ -24,7 +24,7 @@ class HUD extends FlxTypedGroup<FlxSprite>
 		healthCounter = new FlxText(16, 2, 0, "3 / 3", 8);
 		healthCounter.setBorderStyle(SHADOW, FlxColor.GRAY, 1, 1);
 		moneyCounter = new FlxText(0, 2, 0, "0", 8);
-		moneyCounter.setBorderStyle(SHADOW, FlxColor.GRAY, 1 ,1);
+		moneyCounter.setBorderStyle(SHADOW, FlxColor.GRAY, 1, 1);
 		healthIcon = new FlxSprite(4, healthCounter.y + (healthCounter.height / 2) - 4, AssetPaths.health__png);
 		moneyIcon = new FlxSprite(FlxG.width - 123, moneyCounter.y + (moneyCounter.height / 2) - 4, AssetPaths.coin__png);
 		moneyCounter.alignment = RIGHT;
@@ -35,7 +35,7 @@ class HUD extends FlxTypedGroup<FlxSprite>
 		add(moneyIcon);
 		add(healthCounter);
 		add(moneyCounter);
-		forEach(function(sprite) sprite.scrollFactor.set(0,0));
+		forEach(function(sprite) sprite.scrollFactor.set(0, 0));
 	}
 
 	public function updateHUD(health:Int, money:Int)

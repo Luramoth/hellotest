@@ -1,11 +1,13 @@
 package;
 
 import Hud.HUD;
-import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.FlxG;
-import flixel.tile.FlxTilemap;
-import flixel.addons.editors.ogmo.FlxOgmo3Loader;
 import flixel.FlxState;
+import flixel.addons.editors.ogmo.FlxOgmo3Loader;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.tile.FlxTilemap;
+
+using flixel.util.FlxSpriteUtil;
 
 class PlayState extends FlxState
 {
@@ -13,7 +15,10 @@ class PlayState extends FlxState
 	var money:Int = 0;
 	var health:Int = 3;
 
-	var player: Player;
+	var inCombat:Bool = false;
+	var combatHud:CombatHUD;
+
+	var player:Player;
 
 	var map:FlxOgmo3Loader;
 	var walls:FlxTilemap;
@@ -70,8 +75,24 @@ class PlayState extends FlxState
 		}
 	}
 
-	override public function create()
+	function playerTouchEnemy(player:Player, enemy:Enemy)
+	{
+		if (player.alive && player.exists && enemy.alive && enemy.exists && !enemy.isFlickering())
 		{
+			startCombat(enemy);
+		}
+	}
+
+	function startCombat(enemy:Enemy)
+	{
+		inCombat = true;
+		player.active = false;
+		enemies.active = false;
+		combatHud.initCombat(health, enemy);
+	}
+
+	override public function create()
+	{
 		// load tile map
 		map = new FlxOgmo3Loader(AssetPaths.turnBasedRPG__ogmo, AssetPaths.room001__json);
 		walls = map.loadTilemap(AssetPaths.tiles__png, "walls");
@@ -86,7 +107,7 @@ class PlayState extends FlxState
 		coins = new FlxTypedGroup<Coin>();
 		add(coins);
 
-		//create enemies
+		// create enemies
 		enemies = new FlxTypedGroup<Enemy>();
 		add(enemies);
 
@@ -101,19 +122,46 @@ class PlayState extends FlxState
 		hud = new HUD();
 		add(hud);
 
+		combatHud = new CombatHUD();
+		add(combatHud);
+
 		super.create();
 	}
 
 	override public function update(elapsed:Float)
 	{
-		super.update(elapsed);
-		// detect collisions for walls
-		FlxG.collide(player, walls);
-		// detect collisions for coins
-		FlxG.overlap(player, coins, playerTouchCoin);
+		if (inCombat)
+		{
+			if (!combatHud.visible)
+			{
+				health = combatHud.playerHealth;
+				hud.updateHUD(health, money);
+				if (combatHud.outcome == VICTORY)
+				{
+					combatHud.enemy.kill();
+				}
+				else
+				{
+					combatHud.enemy.flicker();
+				}
+				inCombat = false;
+				player.active = true;
+				enemies.active = true;
+			}
+		}
+		else
+		{
+			super.update(elapsed);
+			// detect collisions for walls
+			FlxG.collide(player, walls);
+			// detect collisions for coins
+			FlxG.overlap(player, coins, playerTouchCoin);
 
-		// make enemies collide with walls
-		FlxG.collide(enemies, walls);
-		enemies.forEachAlive(checkEnemyVision);// check if the enemy is seeing the player
+			// make enemies collide with walls
+			FlxG.collide(enemies, walls);
+			enemies.forEachAlive(checkEnemyVision); // check if the enemy is seeing the player
+
+			FlxG.overlap(player, enemies, playerTouchEnemy);
+		}
 	}
 }
